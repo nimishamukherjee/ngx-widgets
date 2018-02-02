@@ -34,6 +34,8 @@ export class MarkdownComponent implements OnChanges, OnInit {
   @Output() showPreview = new EventEmitter();
 
   @ViewChild('editorInput') editorInput: ElementRef;
+  @ViewChild('editorContainer') editorContainer: ElementRef;
+  @ViewChild('editorPreview') editorPreview: ElementRef;
 
   private markdownViewExpanded: boolean = false;
   private tabBarVisible: boolean = true;
@@ -42,6 +44,7 @@ export class MarkdownComponent implements OnChanges, OnInit {
   private renderedText = '';
   private rawText = '';
   private showMore = false;
+  private showMoreLess: boolean = false;
 
   private previousRawText = '';
   private previousRenderedText = '';
@@ -111,6 +114,7 @@ export class MarkdownComponent implements OnChanges, OnInit {
     if (this.editAllow) {
       // Activate the editor
       this.editorActive = true;
+      this.showMoreLess = false;
 
       // Show the markdown default view
       this.viewType = 'markdown';
@@ -129,6 +133,15 @@ export class MarkdownComponent implements OnChanges, OnInit {
 
     // Show the preview default view
     this.viewType = 'preview';
+
+    setTimeout(() => {
+      if (!this.editorActive && this.editorContainer && this.editorPreview) {
+        let h1 = this.editorContainer.nativeElement.offsetHeight;
+        let h2 = this.editorPreview.nativeElement.offsetHeight;
+        if ( h2 > h1 )
+          this.showMoreLess = true;
+      }
+    });
   }
 
   saveClick() {
